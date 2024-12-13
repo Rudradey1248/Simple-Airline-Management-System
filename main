@@ -1,0 +1,143 @@
+import java.util.Scanner;
+
+class Flight {
+    int flightNumber;
+    String destination;
+    int availableSeats;
+    double ticketPrice;
+
+    public Flight(int flightNumber, String destination, int availableSeats, double ticketPrice) {
+        this.flightNumber = flightNumber;
+        this.destination = destination;
+        this.availableSeats = availableSeats;
+        this.ticketPrice = ticketPrice;
+    }
+
+    public void displayFlightInfo() {
+        System.out.println("Flight Number: " + flightNumber + " | Destination: " + destination + " | Available Seats: " + availableSeats + " | Price: $" + ticketPrice);
+    }
+
+    public boolean bookTicket(int seats) {
+        if (availableSeats >= seats) {
+            availableSeats -= seats;
+            return true;
+        }
+        return false;
+    }
+
+    public void cancelTicket(int seats) {
+        availableSeats += seats;
+    }
+}
+
+public class SimpleAirlineSystem {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Sample flight data
+        Flight flight1 = new Flight(101, "New York", 50, 500);
+        Flight flight2 = new Flight(102, "Paris", 30, 600);
+        Flight flight3 = new Flight(103, "Tokyo", 20, 700);
+
+        Flight[] flights = {flight1, flight2, flight3};
+
+
+        System.out.println("Welcome to the Airline System");
+        System.out.print("Enter username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
+
+
+        if (!username.equals("admin") || !password.equals("password123")) {
+            System.out.println("Invalid credentials! Exiting...");
+            return;
+        }
+
+
+        while (true) {
+            System.out.println("\nSimple Airline Management System");
+            System.out.println("1. View Flights");
+            System.out.println("2. Book Ticket");
+            System.out.println("3. Cancel Ticket");
+            System.out.println("4. Check Available Seats");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+
+            if (choice == 1) {
+                // View available flights
+                System.out.println("\nAvailable Flights:");
+                for (Flight flight : flights) {
+                    flight.displayFlightInfo();
+                }
+            } else if (choice == 2) {
+                // Book a ticket
+                System.out.print("Enter Flight Number to book: ");
+                int flightNumber = scanner.nextInt();
+                System.out.print("Enter number of seats to book: ");
+                int seats = scanner.nextInt();
+
+                boolean flightFound = false;
+                for (Flight flight : flights) {
+                    if (flight.flightNumber == flightNumber) {
+                        flightFound = true;
+                        if (flight.bookTicket(seats)) {
+                            System.out.println("Booking successful! Total Cost: $" + (flight.ticketPrice * seats));
+                        } else {
+                            System.out.println("Not enough seats available.");
+                        }
+                        break;
+                    }
+                }
+                if (!flightFound) {
+                    System.out.println("Invalid Flight Number!");
+                }
+            } else if (choice == 3) {
+                // Cancel a booking
+                System.out.print("Enter Flight Number to cancel: ");
+                int flightNumber = scanner.nextInt();
+                System.out.print("Enter number of seats to cancel: ");
+                int seats = scanner.nextInt();
+
+                boolean flightFound = false;
+                for (Flight flight : flights) {
+                    if (flight.flightNumber == flightNumber) {
+                        flightFound = true;
+                        flight.cancelTicket(seats);
+                        System.out.println("Booking canceled successfully!");
+                        break;
+                    }
+                }
+                if (!flightFound) {
+                    System.out.println("Invalid Flight Number!");
+                }
+            } else if (choice == 4) {
+                // Check available seats
+                System.out.print("Enter Flight Number to check seats: ");
+                int flightNumber = scanner.nextInt();
+
+                boolean flightFound = false;
+                for (Flight flight : flights) {
+                    if (flight.flightNumber == flightNumber) {
+                        flightFound = true;
+                        System.out.println("Available seats for flight " + flightNumber + ": " + flight.availableSeats);
+                        break;
+                    }
+                }
+                if (!flightFound) {
+                    System.out.println("Invalid Flight Number!");
+                }
+            } else if (choice == 5) {
+                // Exit
+                System.out.println("Thank you for using the system!");
+                break;
+            } else {
+                System.out.println("Invalid choice! Please try again.");
+            }
+        }
+
+        scanner.close();
+    }
+}
